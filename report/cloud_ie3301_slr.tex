@@ -121,17 +121,17 @@ during training.
 
 \vspace{5mm}
 
-I am interesting in analyzing these sets because I suspect that an instructor who does not develop (or rather, students who 
+I am interested in analyzing these sets because I suspect that an instructor who does not develop (or rather, students who 
 don't sense) a clear plan for how a course will be taught are more likely to be ill-prepared for presenting 
 content to students throughout the semester. Now of course, there are many other reasons that this data may be correlated. \\ 
 Perhaps a student wasn't or was very fond of the instructor regardless of their teaching ability, this could 'skew' results
 in the data since the responder may opt to vote all high or low without serious consideration. 
 For this reason, data with low standard deviations were favored since it showed greater consensus amongst all
-students in a course section. With that being said, results with a standard deviation of 0 are not desired as this would cause the 
-results to be integer values (since students are only able to select integer values). \\
+students in a course section. With that being said, results with a standard deviation of 0 are not desired (but difficult to eliminate) 
+as this leads to integer results (since students are only able to select integer values). \\
 
 In order to collect the data for analysis, the PDF was downloaded from the UTA SFS page and then piped through a PDF to CSV
-converter to extract the raw text.This helped make the data accessible for parsing. I then wrote a script (APPENDIX) that would strip out
+converter to extract the raw text.This helped make the data accessible for parsing. I then wrote a script (Appendix II.B) that would strip out
 lines of interest and combine them into a file that could later be used to extract each individual column. This was done
 by using the spacing between each column as a delimiter for the values, since the columns are unevenly spaced throughout
 the CSV file. Once columns of interests were extracted, they were stored into separate files that could then be loaded into
@@ -191,13 +191,12 @@ In order to assess the usefulness of the model for prediction, we can perform ad
 To perform F-Test, we need to establish our hypotheses. Since we want to show that there is a postive correlation between
 the variables using SLR, a common approach is to note a full model $y_i = (\beta_0+\beta_ix_i)+\epsilon_i$ and reduced model
 $y_i = \beta_0 + \epsilon_i$. These are used to form the hypotheses $H_0$ and $H_1$, respectively. \\
-More explicetely, written as $H_0 : \beta_1 = 0$ and $H_1 : \beta_1 \in \mathbb{R}\setminus \{0\} $
-Performing the calculations for the F-tests yields an F-value of 2.8942 and a p-value of 0.0891. Since the F-value of 2.8942
-is less than the table value of 3.84 we fail to reject $H_0$ and accept $H_1$ instead.
+More explicetely, written as $H_0 : \beta_1 = 0$ and $H_1 : \beta_1 \neq 0 $
+Performing the calculations for the F-tests yields an F-value of 1.38449 and a p-value of 0.2396. Since the F-value
+is less than the F critical value of 3.8514, we fail to reject $H_0$. The F-critical value was taken from Table 2: ANOVA: Results,
+below.
 
 
-
-ANOVA is a useful method for analyzing the means of the variables i
 
 \begin{table}[!htbp]
     \centering
@@ -206,8 +205,8 @@ ANOVA is a useful method for analyzing the means of the variables i
 	\hline
     Groups & Count & Sum & Average & Variance \\
     \hline
-    Clear objectives & 696 & 2952.716 & 4.2424 & 0.3211 \\
-    Prepared & 696 & 3020.81 & 4.340 & 0.27953 \\
+    Clear objectives & 466 & 1991.08 & 4.2727 & 0.27615 \\
+    Prepared & 466 & 2009.791 & 4.3128 & 0.2664 \\
 	\hline
 	\end{tabular}
 
@@ -221,24 +220,36 @@ ANOVA is a useful method for analyzing the means of the variables i
 	\hline
         Source of Variation & SS & df & MS & F & P-value & F crit \\
     \hline
-    Between Groups & 3.3310 & 1 & 3.3310 & 11.0915 & 0.000889 & 3.8491 \\
-    Prepared & 417.44 & 1390 & 0.300320  & & & \\
-    Total & 420.775 & 1391 & & & & \\ 
+    Between Groups & 0.3756 & 1 & 0.3756 & 1.38449 & 0.23963 & 3.8514 \\
+    Prepared & 252.3307 & 930 & 0.2713233  & & & \\
+    Total & 252.706 & 931 & & & & \\ 
 	\hline
 	\end{tabular}
 
     \caption{ANOVA: Results}
 \end{table}
 
-\subsection*{ANOVA}
+ANOVA is a useful method for analyzing the difference in variations between datatuples (generally necessitates
+three or more variables). The calculations were performed in Excel and show some of the values earlier determined using 
+the python scikit package. The table has multiple columns, SS being Sum of Squares for the data, MS is Mean Square, F is our 
+previously used Fisher-test value, and df is the degrees of freedom of the data, for errors it results in n-2, where n is total samples.
+These results do not contradict the hypothesis, so no conclusion against $\beta_1 = 0$ can be made, this supports justification
+for the regression line being useful for testing measurements with the last third set of data.
 
-\subsection*{Prediction Errors}
 
+\begin{wrapfigure}[14]{r}{0.50\textwidth}
+    \centering
+    \includegraphics[width=0.50\textwidth]{results/second_plot}
+    \caption{Residual plot}
+\end{wrapfigure}
 
-% issues with anova:
-% data must be indepdenent, can't guarantee
-% must show that data is normally distributed
-
+Plotting the true y results versus the predicted values (by passing our X test values into the equation) resulted in a scatter plot
+in which we can still see a clear relationship. The results are not perfect since if it was we would expect to see a straight line
+with a slope of one. It is helpful though as a tool to visualize what we predicted would occur versus what the actual results were.
+This can be broken down numerically with other error metrics, such as the median absolute error and mean absolute error. \\
+In both cases the errors were 0.12605 and 0.20252. The median absolute error can be useful since it ignores outliers in calculation.
+With the SFS data, this was not a great indicator as the outliers are restricted by the maximum and minimum values of the survey.
+The Mean Squared Error was 0.08766, respectfully low.
 
 
 
@@ -254,13 +265,18 @@ clearly defined. Considering the slope of the regression line is not $1$ it also
 to score with extremes based on their overall bias for or against an instructor, this is in part due, again to selection of data with relatively
 low standard deviations. The errors measured and residuals also help indicate that the regression line is able to predict with 70\% accuracy the 
 result of instructor preparedness given how clearly they define objectives at the beginning of a semester. \\
-
+As an aside, one of the great things about visualizing the data with the plots was that it showed that students typically rate their professors
+highly, the mean being between a 4.2-4.3 (according to table 1 ANOVA summary). It is great to see that students feel in general that instructors
+at UTA are putting in the effort to teach in effective and clear way.
 
 
 
 \newpage
 \section*{Appendix}
 \addcontentsline{toc}{section}{Appendix}
+
+\subsection*{I - Tables}
+\addcontentsline{toc}{subsection}{III - Tables}
 
 \begin{table}[!htpb]
     \centering
@@ -311,20 +327,6 @@ result of instructor preparedness given how clearly they define objectives at th
 	4.091 & 3.333 & 4     & 2.941 & 4.75  & 3.6   & 4     & 4.5   & 4.516 & 4.714 & 4.556 & 3.833 \\
 	4.429 & 4.667 & 3.818 & 4.75  & 4.667 & 5     & 5     & 4.5   & 2.857 & 3.167 & 4.2   & 4.267 \\
 	4.286 & 3.1   & 2     & 4.167 & 4.857 & 4.5   & 4.25  & 3.5   & 4     & 3.571 & 4.125 & 4.2   \\
-	4.571 & 4.556 & 4.667 & 4.786 & 4.667 & 4.625 & 4.125 & 5     & 3.2   & 3.5   & 3     & 4.2   \\
-	4.308 & 3     & 5     & 4.571 & 4     & 4     & 4.714 & 4     & 4     & 4.5   & 4.2   & 4.5   \\
-	4.4   & 4.625 & 4.8   & 4.7   & 4.25  & 4.636 & 5     & 4.5   & 4.5   & 5     & 4.833 & 4.5   \\
-	5     & 3.909 & 4.167 & 4.462 & 4.448 & 4     & 3.5   & 2.75  & 4.727 & 4.8   & 3.889 & 4.714 \\
-	4.1   & 4.818 & 4.429 & 4.571 & 4.615 & 4.636 & 4.133 & 4.333 & 4.571 & 4.786 & 4.941 & 4.833 \\
-	4.3   & 3     & 4.8   & 4.25  & 4.667 & 4.818 & 4.556 & 3.559 & 3.409 & 5     & 5     & 4     \\
-	4.7   & 4.667 & 4.75  & 4     & 3.417 & 3.7   & 3.375 & 3     & 3.333 & 3.6   & 3     & 2.5   \\
-	4.091 & 4.727 & 4.714 & 4.571 & 4.6   & 4.625 & 3.75  & 2.1   & 3.75  & 2.923 & 3.75  & 4.421 \\
-	4.19  & 3.833 & 4.833 & 4.667 & 4.667 & 3.8   & 3.857 & 4.7   & 4.25  & 4.727 & 4.8   & 4.286 \\
-	4.333 & 4.25  & 4     & 3.765 & 4.667 & 4.625 & 4.875 & 5     & 4.167 & 5     & 4.429 & 3.714 \\
-	3.125 & 4.143 & 4.333 & 5     & 4.9   & 3.556 & 4.5   & 3.286 & 3.857 & 4.231 & 3.429 & 2.667 \\
-	3.5   & 4.182 & 4.4   & 1     & 4.2   & 2     & 3.667 & 4     & 4.2   & 3.4   & 4.462 & 3.8   \\
-	3.643 & 4.25  & 4.333 & 3.571 & 4     & 4.75  & 3.667 & 4.4   & 5     & 4.364 & 4     & 4.3   \\
-	4.562 & 4     & 4.9   & 3.818 & 3.7   & 4.154 & 3.8   & 4.444 & 3.667 & 4.5   & 3.778 & 3.917 \\
 	\hline
 	\end{tabular}
 
@@ -386,29 +388,18 @@ result of instructor preparedness given how clearly they define objectives at th
 	4.5   & 4.375 & 4.8   & 4.4   & 4.25  & 4.455 & 5     & 4.5   & 4.5   & 5     & 5     & 4.5   \\
 	5     & 4.455 & 4.5   & 4.462 & 4.414 & 4     & 3.625 & 4.25  & 4.636 & 4.5   & 3.556 & 4.286 \\
 	4.4   & 4.818 & 4.571 & 4.857 & 4.846 & 4.909 & 4.533 & 4.444 & 4.571 & 4.643 & 4.882 & 4.667 \\
-	4.4   & 3.4   & 4.6   & 4.5   & 4.5   & 4.727 & 4.556 & 3.656 & 3.333 & 5     & 4.889 & 4.125 \\
-	4.6   & 5     & 4.75  & 4.4   & 3.583 & 3.9   & 3.25  & 3     & 3.417 & 3.6   & 3.25  & 2.667 \\
-	3.909 & 4.727 & 4.571 & 4.429 & 4.6   & 4.714 & 4.375 & 4.2   & 3.5   & 3     & 3.75  & 3.842 \\
-	4.476 & 4.364 & 4.667 & 4.667 & 4.667 & 4     & 3.857 & 4.8   & 4.167 & 4.364 & 4.8   & 4.571 \\
-	5     & 4.375 & 4.4   & 3.882 & 4.667 & 4.813 & 4.75  & 5     & 4.385 & 5     & 4.429 & 4     \\
-	3.125 & 4.143 & 4.333 & 5     & 4.9   & 3.667 & 4     & 3.714 & 4.214 & 4.385 & 3.286 & 3.083 \\
-	3.333 & 4.091 & 4.1   & 2.5   & 4     & 2.333 & 3.167 & 4.2   & 4     & 3.4   & 4.154 & 3.9   \\
-	3.357 & 4.25  & 4.5   & 3     & 4.545 & 4.75  & 3.667 & 4.4   & 5     & 4.545 & 4.25  & 4.6   \\
-	4.625 & 4.143 & 4.8   & 4     & 4.1   & 4.077 & 3.9   & 4.056 & 4.333 & 4.333 & 4.333 & 4.545 \\
 	\hline
 	\end{tabular}
 
     \caption{Dependent variable: How prepared an instructor was for activity [, 5]}
 \end{table}
 
+\newpage
 
 
 
-\subsection*{III - Tables}
-\addcontentsline{toc}{subsection}{III - Tables}
 
-
-\subsection*{IV - Code}
+\subsection*{II - Code}
 \addcontentsline{toc}{subsection}{IV - Code}
 
 
