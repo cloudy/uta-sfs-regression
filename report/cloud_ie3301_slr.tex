@@ -83,11 +83,11 @@
 Near the conclusion of each semester at UT Arlington (UTA), students are asked to submit their unbiased, anonymous comments
 and ratings on the instructors of each of the classes they took. According to the Student Feedback Survey (SFS) website, 
 the surveys are designed to "[give] students an opportunity to reflect upon their experience in each organized course", and
-to "help members of the faculty identify which aspects of a course should remain unchanged and which aspects might benefit
+to "help members of faculty identify which aspects of a course should remain unchanged and which aspects might benefit
 from revision". \\ 
 Once the survey deadline passes, the data is compiled and shared to the academic departments and is made available online
-for all students to access (www.uta.edu/ier/Surveys/SFS/the-results.php). It is one of many resources used by students to help them decide which
-courses to take in following semesters.  \\
+for all students to access (www.uta.edu/ier/Surveys/SFS/the-results.php). It is one of many resources used by students to help
+with course selection in following semesters.  \\
 The public data contains various performance metrics such as how well a student felt an instructor encouraged
 him/her to take an active role in his/her learning, or how accessible an instructor was in person or electronically, etc. \\
 Simple Linear Regression (SLR) is a useful tool for making predictions with continuous data and modeling relationships between
@@ -128,7 +128,7 @@ Perhaps a student wasn't or was very fond of the instructor regardless of their 
 in the data since the responder may opt to vote all high or low without serious consideration. 
 For this reason, data with low standard deviations were favored since it showed greater consensus amongst all
 students in a course section. With that being said, results with a standard deviation of 0 are not desired as this would cause the 
-results to be integer values (since students are only able to select discrete integer values). \\
+results to be integer values (since students are only able to select integer values). \\
 
 In order to collect the data for analysis, the PDF was downloaded from the UTA SFS page and then piped through a PDF to CSV
 converter to extract the raw text.This helped make the data accessible for parsing. I then wrote a script (APPENDIX) that would strip out
@@ -142,12 +142,12 @@ a python script to perform SLR and accompanying analysis.
 \section*{Linear Regression}
 \addcontentsline{toc}{section}{Linear Regression}
 
-The heart of this report is the use of SLR to find a line that models the relationship between our two variables in question. 
+The heart of this report is the use of SLR to find a line that models the relationship between the two variables in question. 
 These variables are referred to by many different terms- for the sake of consistency I will refer to them as the independent and
 dependent variables.  With SLR, we are modeling the relationship through a simple linear equation, typically written as
 $ \hat Y = b_0 + b_1x$ where $\hat Y$ estimates the true linear equation $\beta_0 + \beta_1x$. \\
-SLR was performed using the scikit-learn package, with python. In figure 1 it was fairly easy to spot a trend in the data that indicates
-a positive relationship between variables. And the regression line as expected finds its way along that path, shown in figure 2.
+SLR was performed using the scikit-learn package with python. In figure 1 it is fairly easy to spot a trend in the data that indicates
+a positive relationship between variables. And the regression line as expected finds its way along that path during testing, shown in figure 2.
 
 
 \begin{wrapfigure}[14]{r}{0.50\textwidth}
@@ -157,13 +157,13 @@ a positive relationship between variables. And the regression line as expected f
 \end{wrapfigure}
 
 
-It is clear from the line that there is a strong positive linear relationship between the data. This also gives us the values
+By visual inspection we see that there is a strong positive linear relationship between the data. This also gives us the values
 for the $\beta_*$ parameters, with our estimated $\hat Y = 0.8048x + 0.8740$, note that this value will vary depending on how the data
 is shuffled, as each time the analysis is performed a different set of training and testing set is produced using
 the same 696 sample pairs. In order to perform a thorough analysis, it is also important to consider some other performance metrics.
 One indicator is the R-squared value. The R-squared value is a percentage measure indicating how close the data points are with regard
-to the regression line. A high R-squared value is preferred, and generally a value above 0.50 or 50\% is considered good. 
-In the case of this dataset, we obtained an R-squared value of 70.64\%, a very good value. 
+to the regression line. A high R-squared value is preferred, and generally a value above 0.50 (or 50\%) is considered good. 
+In the case of this dataset, we obtained an R-squared value of 70.64\%, a good result. 
 
 \begin{wrapfigure}[14]{l}{0.50\textwidth}
     \centering
@@ -174,13 +174,70 @@ In the case of this dataset, we obtained an R-squared value of 70.64\%, a very g
 Although a high R-squared value is generally a great result, it is not an adequate condition for stating a regression model is reliable. 
 We should also consider the residual plots to get a more comprehensive view. The residual plot is a measurement of the predicted
 values subtracted from the observed. Ideally we would see random clustering around 0 on the x-axis, as this would indicate that there 
-isn't an inbalance where the regression prediction being much greater, or smaller than the actual values. In addition to this, it helps
+isn't an inbalance where the regression predicted values resolve to being  much greater, or smaller than the actual values. In addition to this, it helps
 to take into accounts some other error metrics, and then take the mean of the errors. One such value is the Mean Squared Error, 
-which simply measures the the difference between the predicted values with raw points. This is used to calculate the R-squared value
+which simply measures the difference between the predicted values with raw points. This is used to calculate the R-squared value
 discussed above. \\
 It is worth noting that although regression is a powerful tool for predicting outcomes based on previous data, in this case it was useful
 strictly for predicting values based on test data, so then the error could be assessed. This error measurement is important to better
-understand how 'reliably' the line performs. 
+understand how 'reliably' the line performs.  
+
+
+\newpage
+\section*{Analysis}
+\addcontentsline{toc}{section}{Analysis}
+
+In order to assess the usefulness of the model for prediction, we can perform additional analysis through the F-Test.
+To perform F-Test, we need to establish our hypotheses. Since we want to show that there is a postive correlation between
+the variables using SLR, a common approach is to note a full model $y_i = (\beta_0+\beta_ix_i)+\epsilon_i$ and reduced model
+$y_i = \beta_0 + \epsilon_i$. These are used to form the hypotheses $H_0$ and $H_1$, respectively. \\
+More explicetely, written as $H_0 : \beta_1 = 0$ and $H_1 : \beta_1 \in \mathbb{R}\setminus \{0\} $
+Performing the calculations for the F-tests yields an F-value of 2.8942 and a p-value of 0.0891. Since the F-value of 2.8942
+is less than the table value of 3.84 we fail to reject $H_0$ and accept $H_1$ instead.
+
+
+
+ANOVA is a useful method for analyzing the means of the variables i
+
+\begin{table}[!htbp]
+    \centering
+
+	\begin{tabular}{lcccc}
+	\hline
+    Groups & Count & Sum & Average & Variance \\
+    \hline
+    Clear objectives & 696 & 2952.716 & 4.2424 & 0.3211 \\
+    Prepared & 696 & 3020.81 & 4.340 & 0.27953 \\
+	\hline
+	\end{tabular}
+
+    \caption{ANOVA: Summary}
+\end{table}
+
+\begin{table}[!htbp]
+    \centering
+
+	\begin{tabular}{lcccccc}
+	\hline
+        Source of Variation & SS & df & MS & F & P-value & F crit \\
+    \hline
+    Between Groups & 3.3310 & 1 & 3.3310 & 11.0915 & 0.000889 & 3.8491 \\
+    Prepared & 417.44 & 1390 & 0.300320  & & & \\
+    Total & 420.775 & 1391 & & & & \\ 
+	\hline
+	\end{tabular}
+
+    \caption{ANOVA: Results}
+\end{table}
+
+\subsection*{ANOVA}
+
+\subsection*{Prediction Errors}
+
+
+% issues with anova:
+% data must be indepdenent, can't guarantee
+% must show that data is normally distributed
 
 
 
@@ -205,7 +262,7 @@ result of instructor preparedness given how clearly they define objectives at th
 \section*{Appendix}
 \addcontentsline{toc}{section}{Appendix}
 
-\begin{table}
+\begin{table}[!htpb]
     \centering
 
 	\begin{tabular}{rrrrrrrrrrrr}
@@ -275,7 +332,7 @@ result of instructor preparedness given how clearly they define objectives at th
 \end{table}
 
 
-\begin{table}
+\begin{table}[!htbp]
     \centering
 	\begin{tabular}{rrrrrrrrrrrr}
 	
